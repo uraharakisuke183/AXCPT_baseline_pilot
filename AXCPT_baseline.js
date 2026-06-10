@@ -13,8 +13,9 @@ const { round } = util;
 
 // store info about the experiment session:
 let expName = 'AXCPT_baseline';  // from the Builder filename that created this script
+const _urlId = new URLSearchParams(window.location.search).get('id') || 'unknown';
 let expInfo = {
-    'participant': '',
+    'participant': _urlId,
     'session': '001',
 };
 let PILOTING = util.getUrlParameters().has('__pilotToken');
@@ -35,9 +36,9 @@ psychoJS.openWindow({
   backgroundFit: 'none',
 });
 // schedule the experiment:
-psychoJS.schedule(psychoJS.gui.DlgFromDict({
-  dictionary: expInfo,
-  title: expName
+psychoJS.schedule((async () => {
+  psychoJS.gui.dialogComponent = {button: 'OK'};
+  return Scheduler.Event.NEXT;
 }));
 
 const flowScheduler = new Scheduler(psychoJS);
@@ -236,13 +237,7 @@ async function experimentInit() {
   ];
   
   current_page = 0;
-  
-  let pid = psychoJS.experiment.extraInfo["participant"] || "";
-  pid = pid.trim();
-  if (pid === "" || !/^\d+$/.test(pid)) {
-      alert("Поле \"Participant ID\" пустое или заполнено неверно.\n\nПожалуйста, перезапустите эксперимент\nи введите Ваш числовой номер участника.");
-      quitPsychoJS("", false);
-  }
+// ID приходит автоматически из URL-параметра ?id=P001
   instruction_text = new visual.TextStim({
     win: psychoJS.window,
     name: 'instruction_text',
