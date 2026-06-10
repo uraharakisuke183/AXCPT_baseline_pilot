@@ -3268,7 +3268,7 @@ function questionnareRoutineEachFrame() {
           btn5.wasClicked = false;
         }
         // Run 'Each Frame' code from code_questionnaire
-        opt5_is_empty = (((opt5 === null) || (opt5.toString().strip() === "")) || (opt5.toString().strip().toLowerCase() === "none"));
+        opt5_is_empty = (((opt5 === null) || (opt5.toString().trim() === "")) || (opt5.toString().trim().toLowerCase() === "none"));
         if (opt5_is_empty) {
             btn5.opacity = 0;
             btn5.disabled = true;
