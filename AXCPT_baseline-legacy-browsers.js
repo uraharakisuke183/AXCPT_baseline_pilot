@@ -28,9 +28,9 @@ psychoJS.openWindow({
   backgroundFit: 'none',
 });
 // schedule the experiment:
-psychoJS.schedule((async () => {
-  psychoJS.gui.dialogComponent = {button: 'OK'};
-  return Scheduler.Event.NEXT;
+psychoJS.schedule(psychoJS.gui.DlgFromDict({
+  dictionary: expInfo,
+  title: expName
 }));
 
 const flowScheduler = new Scheduler(psychoJS);
