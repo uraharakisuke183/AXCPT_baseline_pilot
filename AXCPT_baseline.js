@@ -321,7 +321,7 @@ async function experimentInit() {
     name: 'isi_blank',
     text: '+++',
     font: 'Tahoma',
-    units: 'height', 
+    units: undefined, 
     pos: [0, 0], draggable: false, height: 0.08,  wrapWidth: undefined, ori: 0.0,
     languageStyle: 'LTR',
     color: new util.Color('black'),  opacity: undefined,
