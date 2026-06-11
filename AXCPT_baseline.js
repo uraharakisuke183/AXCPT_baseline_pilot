@@ -461,7 +461,7 @@ async function experimentInit() {
   text = new visual.TextStim({
     win: psychoJS.window,
     name: 'text',
-    text: 'Вы выполнили 1/3 (или 2/3) эксперимента!\n\nПожалуйста, сделайте перерыв на 1–5 минут.\n\nЧерез одну минуту вы сможете продолжить выполнение задания.\nНажмите ПРОБЕЛ, когда будете готовы продолжить.\n\nЕсли вам нужно больше времени, это нормально, но, пожалуйста, не делайте перерыв дольше 5 минут.',
+    text: 'Вы выполнили 1/3 (или 2/3) эксперимента!\n\nПожалуйста, сделайте перерыв на 1–5 минут.\n\nЧерез одну минуту вы сможете продолжить выполнение задания.\n\nЕсли вам нужно больше времени, это нормально, но, пожалуйста, не делайте перерыв дольше 5 минут.',
     font: 'Arial',
     units: undefined, 
     pos: [0, 0], draggable: false, height: 0.04,  wrapWidth: undefined, ori: 0.0,
@@ -2675,9 +2675,10 @@ function block_breakRoutineBegin(snapshot) {
         // update component parameters for each repeat
         // Run 'Begin Routine' code from code
         if ((blocks_loop.thisN === (blocks_loop.nTotal - 1))) {
-            continueRoutine = false;
-        }
-        
+    continueRoutine = false;
+} else {
+    text.setText('Вы выполнили 1/3 (или 2/3) эксперимента!\n\nПожалуйста, сделайте перерыв на 1–5 минут.\n\nЧерез одну минуту вы сможете продолжить выполнение задания.\n\nЕсли вам нужно больше времени, это нормально, но, пожалуйста, не делайте перерыв дольше 5 минут.');
+}
         key_resp_5.keys = undefined;
         key_resp_5.rt = undefined;
         _key_resp_5_allKeys = [];
