@@ -320,9 +320,9 @@ async function experimentInit() {
     win: psychoJS.window,
     name: 'isi_blank',
     text: '+++',
-    font: 'Arial',
+    font: 'Tahoma',
     units: 'height', 
-    pos: [0, 0], draggable: false, height: 0.05,  wrapWidth: undefined, ori: 0.0,
+    pos: [0, 0], draggable: false, height: 0.08,  wrapWidth: undefined, ori: 0.0,
     languageStyle: 'LTR',
     color: new util.Color('black'),  opacity: undefined,
     depth: -1.0 
