@@ -3012,7 +3012,7 @@ function questionnareRoutineBegin(snapshot) {
             btn.wasClicked = btn.isClicked;
             btn.timesOn = [];
             btn.timesOff = [];
-            btn.buttonClock.reset();
+            btn.clock.reset();
         }
         
         psychoJS.experiment.addData('questionnare.started', globalClock.getTime());
