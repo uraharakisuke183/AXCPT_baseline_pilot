@@ -312,7 +312,7 @@ async function experimentInit() {
   isi_blank = new visual.TextStim({
     win: psychoJS.window,
     name: 'isi_blank',
-    text: '',
+    text: '+++',
     font: 'Arial',
     units: 'height', 
     pos: [0, 0], draggable: false, height: 0.05,  wrapWidth: undefined, ori: 0.0,
@@ -1580,7 +1580,7 @@ function trialRoutineEachFrame() {
     if (border.status === PsychoJS.Status.STARTED) {
     }
     
-    frameRemains = 4.5 + border_dur - psychoJS.window.monitorFramePeriod * 0.75;// most of one frame period left
+    frameRemains = 4.5 + 0.75 - psychoJS.window.monitorFramePeriod * 0.75;// most of one frame period left
     if (border.status === PsychoJS.Status.STARTED && t >= frameRemains) {
       // keep track of stop time/frame for later
       border.tStop = t;  // not accounting for scr refresh
@@ -1703,14 +1703,14 @@ function trialRoutineEachFrame() {
         psychoJS.window.callOnFlip(function() { probe_key_resp.start(); }); // start on screen flip
         psychoJS.window.callOnFlip(function() { probe_key_resp.clearEvents(); });
       }
-      frameRemains = 4.75 + 0.5 - psychoJS.window.monitorFramePeriod * 0.75;// most of one frame period left
+      frameRemains = 4.75 + 1.5 - psychoJS.window.monitorFramePeriod * 0.75;// most of one frame period left
       if (probe_key_resp.status === PsychoJS.Status.STARTED && t >= frameRemains) {
         // keep track of stop time/frame for later
         probe_key_resp.tStop = t;  // not accounting for scr refresh
         probe_key_resp.frameNStop = frameN;  // exact frame index
         // update status
         probe_key_resp.status = PsychoJS.Status.FINISHED;
-        frameRemains = 4.75 + 0.5 - psychoJS.window.monitorFramePeriod * 0.75;// most of one frame period left
+        frameRemains = 4.75 + 1.5 - psychoJS.window.monitorFramePeriod * 0.75;// most of one frame period left
         if (probe_key_resp.status === PsychoJS.Status.STARTED && t >= frameRemains) {
           // keep track of stop time/frame for later
           probe_key_resp.tStop = t;  // not accounting for scr refresh
