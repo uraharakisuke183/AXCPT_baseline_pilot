@@ -132,7 +132,7 @@ psychoJS.start({
     {'name': 'conditions/demo_trials/demo_BX.xlsx', 'path': 'conditions/demo_trials/demo_BX.xlsx'},
     {'name': 'conditions/demo_trials/demo_nogo.xlsx', 'path': 'conditions/demo_trials/demo_nogo.xlsx'},
     {'name': 'conditions/practice_trials.xlsx', 'path': 'conditions/practice_trials.xlsx'},
-    {'name': 'conditions/blocks_short.xlsx', 'path': 'conditions/blocks_short.xlsx'},
+    {'name': 'conditions/blocks.xlsx', 'path': 'conditions/blocks.xlsx'},
     {'name': 'conditions/main_trials.xlsx', 'path': 'conditions/main_trials.xlsx'},
     {'name': 'questionnare/questionnaire_loop.xlsx', 'path': 'questionnare/questionnaire_loop.xlsx'},
   ]
@@ -1281,7 +1281,7 @@ function blocks_loopLoopBegin(blocks_loopLoopScheduler, snapshot) {
       psychoJS: psychoJS,
       nReps: 1, method: TrialHandler.Method.SEQUENTIAL,
       extraInfo: expInfo, originPath: undefined,
-      trialList: 'conditions/blocks_short.xlsx',
+      trialList: 'conditions/blocks.xlsx',
       seed: undefined, name: 'blocks_loop'
     });
     psychoJS.experiment.addLoop(blocks_loop); // add the loop to the experiment
@@ -2737,13 +2737,13 @@ function block_breakRoutineEachFrame() {
         }
         
         // Run 'Each Frame' code from code
-        if ((t >= 1)) {
+        if ((t >= 60)) {
     text.setText("Минута прошла.\n\nНажмите ПРОБЕЛ, если готовы продолжить, либо отдохните ещё несколько минут (не более 5).");
 }
         
         
         // *key_resp_5* updates
-        if (t >= 1 && key_resp_5.status === PsychoJS.Status.NOT_STARTED) {
+        if (t >= 60 && key_resp_5.status === PsychoJS.Status.NOT_STARTED) {
           // keep track of start time/frame for later
           key_resp_5.tStart = t;  // (not accounting for frame time here)
           key_resp_5.frameNStart = frameN;  // exact frame index
