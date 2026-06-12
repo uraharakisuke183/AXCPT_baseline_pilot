@@ -132,7 +132,7 @@ psychoJS.start({
     {'name': 'conditions/demo_trials/demo_BX.xlsx', 'path': 'conditions/demo_trials/demo_BX.xlsx'},
     {'name': 'conditions/demo_trials/demo_nogo.xlsx', 'path': 'conditions/demo_trials/demo_nogo.xlsx'},
     {'name': 'conditions/practice_trials.xlsx', 'path': 'conditions/practice_trials.xlsx'},
-    {'name': 'conditions/blocks.xlsx', 'path': 'conditions/blocks.xlsx'},
+    {'name': 'conditions/blocks_short.xlsx', 'path': 'conditions/blocks_short.xlsx'},
     {'name': 'conditions/main_trials.xlsx', 'path': 'conditions/main_trials.xlsx'},
     {'name': 'questionnare/questionnaire_loop.xlsx', 'path': 'questionnare/questionnaire_loop.xlsx'},
   ]
@@ -494,7 +494,7 @@ async function experimentInit() {
     win: psychoJS.window,
     name: 'question_text',
     text: '',
-    font: 'Noto Sans',
+    font: 'Arial',
     units: undefined, 
     pos: [0, 0.35], draggable: false, height: 0.06,  wrapWidth: 1.2, ori: 0.0,
     languageStyle: 'LTR',
@@ -506,7 +506,7 @@ async function experimentInit() {
     win: psychoJS.window,
     name: 'btn1',
     text: '',
-    font: 'Noto Sans',
+    font: 'Arial',
     pos: [0.0, 0.2],
     size: [0.8, 0.08],
     padding: null,
@@ -530,7 +530,7 @@ async function experimentInit() {
     win: psychoJS.window,
     name: 'btn2',
     text: '',
-    font: 'Noto Sans',
+    font: 'Arial',
     pos: [0, 0.11],
     size: [0.8, 0.08],
     padding: null,
@@ -554,7 +554,7 @@ async function experimentInit() {
     win: psychoJS.window,
     name: 'btn3',
     text: '',
-    font: 'Noto Sans',
+    font: 'Arial',
     pos: [0.0, 0.02],
     size: [0.8, 0.08],
     padding: null,
@@ -578,7 +578,7 @@ async function experimentInit() {
     win: psychoJS.window,
     name: 'btn4',
     text: '',
-    font: 'Noto Sans',
+    font: 'Arial',
     pos: [0, (- 0.07)],
     size: [0.8, 0.08],
     padding: null,
@@ -602,7 +602,7 @@ async function experimentInit() {
     win: psychoJS.window,
     name: 'btn5',
     text: '',
-    font: 'Noto Sans',
+    font: 'Arial',
     pos: [0, (- 0.16)],
     size: [0.8, 0.08],
     padding: null,
@@ -1275,20 +1275,26 @@ function blocks_loopLoopBegin(blocks_loopLoopScheduler, snapshot) {
       psychoJS: psychoJS,
       nReps: 1, method: TrialHandler.Method.SEQUENTIAL,
       extraInfo: expInfo, originPath: undefined,
-      trialList: 'conditions/blocks.xlsx',
+      trialList: 'conditions/blocks_short.xlsx',
       seed: undefined, name: 'blocks_loop'
     });
     psychoJS.experiment.addLoop(blocks_loop); // add the loop to the experiment
     currentLoop = blocks_loop;  // we're now the current loop
     
     // Schedule all the trials in the trialList:
-    for (const thisBlocks_loop of blocks_loop) {
+        for (const thisBlocks_loop of blocks_loop) {
       snapshot = blocks_loop.getSnapshot();
       blocks_loopLoopScheduler.add(importConditions(snapshot));
       const trials_loopLoopScheduler = new Scheduler(psychoJS);
       blocks_loopLoopScheduler.add(trials_loopLoopBegin(trials_loopLoopScheduler, snapshot));
       blocks_loopLoopScheduler.add(trials_loopLoopScheduler);
       blocks_loopLoopScheduler.add(trials_loopLoopEnd);
+      blocks_loopLoopScheduler.add(async function() {
+        if (!psychoJS.experiment.isEntryEmpty()) {
+            psychoJS.experiment.nextEntry(snapshot);
+        }
+        return Scheduler.Event.NEXT;
+      });
       blocks_loopLoopScheduler.add(block_breakRoutineBegin(snapshot));
       blocks_loopLoopScheduler.add(block_breakRoutineEachFrame());
       blocks_loopLoopScheduler.add(block_breakRoutineEnd(snapshot));
@@ -1830,9 +1836,13 @@ function trialRoutineEnd(snapshot) {
             probe_corr = ((pressed === correct_ans) ? 1 : 0);
         }
         psychoJS.experiment.addData("probe_corr", probe_corr);
-        
-        // the Routine "trial" was not non-slip safe, so reset the non-slip timer
-        routineTimer.reset();
+// ← новые строки:
+psychoJS.experiment.addData("block_number", blocks_loop.thisN + 1);
+psychoJS.experiment.addData("trial_number", trials_loop.thisN + 1);
+psychoJS.experiment.addData("is_nogo", ((probe_key_resp.keys === undefined || probe_key_resp.keys === "") ? 1 : 0));
+
+// the Routine "trial" was not non-slip safe, so reset the non-slip timer
+routineTimer.reset();
         
         // Routines running outside a loop should always advance the datafile row
         if (currentLoop === psychoJS.experiment) {
