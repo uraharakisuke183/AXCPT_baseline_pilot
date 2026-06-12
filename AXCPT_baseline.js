@@ -2996,20 +2996,17 @@ function questionnareRoutineBegin(snapshot) {
         questionnareClock.reset();
         routineTimer.reset();
         questionnareMaxDurationReached = false;
-        // update component parameters for each repeat
+                // update component parameters for each repeat
         question_text.setText(question);
-        btn1.setText(opt1);
-        // reset btn1 to account for continued clicks & clear times on/off
         btn1.reset()
-        btn2.setText(opt2);
-        // reset btn2 to account for continued clicks & clear times on/off
+        btn1.setText(opt1);
         btn2.reset()
-        btn3.setText(opt3);
-        // reset btn3 to account for continued clicks & clear times on/off
+        btn2.setText(opt2);
         btn3.reset()
-        btn4.setText(opt4);
-        // reset btn4 to account for continued clicks & clear times on/off
+        btn3.setText(opt3);
         btn4.reset()
+        btn4.setText(opt4);
+        btn5.reset()
         btn5.setText(opt5);
         // reset btn5 to account for continued clicks & clear times on/off
         btn5.reset()
