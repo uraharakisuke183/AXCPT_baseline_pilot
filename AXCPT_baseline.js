@@ -2737,13 +2737,13 @@ function block_breakRoutineEachFrame() {
         }
         
         // Run 'Each Frame' code from code
-        if ((t >= 60)) {
+        if ((t >= 1)) {
     text.setText("Минута прошла.\n\nНажмите ПРОБЕЛ, если готовы продолжить, либо отдохните ещё несколько минут (не более 5).");
 }
         
         
         // *key_resp_5* updates
-        if (t >= 60 && key_resp_5.status === PsychoJS.Status.NOT_STARTED) {
+        if (t >= 1 && key_resp_5.status === PsychoJS.Status.NOT_STARTED) {
           // keep track of start time/frame for later
           key_resp_5.tStart = t;  // (not accounting for frame time here)
           key_resp_5.frameNStart = frameN;  // exact frame index
