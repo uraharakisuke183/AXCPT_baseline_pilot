@@ -124,7 +124,7 @@ psychoJS.start({
     {'name': 'conditions/demo_trials/demo_BX.xlsx', 'path': 'conditions/demo_trials/demo_BX.xlsx'},
     {'name': 'conditions/demo_trials/demo_nogo.xlsx', 'path': 'conditions/demo_trials/demo_nogo.xlsx'},
     {'name': 'conditions/practice_trials.xlsx', 'path': 'conditions/practice_trials.xlsx'},
-    {'name': 'conditions/blocks_short.xlsx', 'path': 'conditions/blocks_short.xlsx'},
+    {'name': 'conditions/blocks.xlsx', 'path': 'conditions/blocks.xlsx'},
     {'name': 'conditions/main_trials.xlsx', 'path': 'conditions/main_trials.xlsx'},
     {'name': 'questionnare/questionnaire_loop.xlsx', 'path': 'questionnare/questionnaire_loop.xlsx'},
   ]
@@ -1279,7 +1279,7 @@ function blocks_loopLoopBegin(blocks_loopLoopScheduler, snapshot) {
       psychoJS: psychoJS,
       nReps: 1, method: TrialHandler.Method.SEQUENTIAL,
       extraInfo: expInfo, originPath: undefined,
-      trialList: 'conditions/blocks_short.xlsx',
+      trialList: 'conditions/blocks.xlsx',
       seed: undefined, name: 'blocks_loop'
     });
     psychoJS.experiment.addLoop(blocks_loop); // add the loop to the experiment
