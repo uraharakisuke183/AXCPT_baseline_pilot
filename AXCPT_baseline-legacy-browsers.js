@@ -1838,14 +1838,15 @@ function trialRoutineEnd(snapshot) {
         } else {
             probe_corr = ((pressed === correct_ans) ? 1 : 0);
         }
-        psychoJS.experiment.addData("probe_corr", probe_corr);
-// ← новые строки:
-psychoJS.experiment.addData("block_number", blocks_loop.thisN + 1);
-psychoJS.experiment.addData("trial_number", trials_loop.thisN + 1);
-psychoJS.experiment.addData("is_nogo", ((probe_key_resp.keys === undefined || probe_key_resp.keys === "") ? 1 : 0));
-
-// the Routine "trial" was not non-slip safe, so reset the non-slip timer
-routineTimer.reset();
+                psychoJS.experiment.addData("probe_corr", probe_corr);
+        psychoJS.experiment.addData("is_nogo", ((probe_key_resp.keys === undefined || probe_key_resp.keys === "") ? 1 : 0));
+        if (typeof blocks_loop !== 'undefined' && blocks_loop !== null) {
+            psychoJS.experiment.addData("block_number", blocks_loop.thisN + 1);
+            psychoJS.experiment.addData("trial_number", trials_loop.thisN + 1);
+        }
+        
+        // the Routine "trial" was not non-slip safe, so reset the non-slip timer
+        routineTimer.reset();
         
         // Routines running outside a loop should always advance the datafile row
         if (currentLoop === psychoJS.experiment) {
