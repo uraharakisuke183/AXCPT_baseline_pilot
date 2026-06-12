@@ -518,6 +518,7 @@ async function experimentInit() {
     italic: false,
   });
   btn1.clock = new util.Clock();
+  btn1.buttonClock = btn1.clock;
   
   btn2 = new visual.ButtonStim({
     win: psychoJS.window,
@@ -542,6 +543,7 @@ async function experimentInit() {
     italic: false,
   });
   btn2.clock = new util.Clock();
+  btn2.buttonClock = btn2.clock;
   
   btn3 = new visual.ButtonStim({
     win: psychoJS.window,
@@ -566,6 +568,7 @@ async function experimentInit() {
     italic: false,
   });
   btn3.clock = new util.Clock();
+  btn3.buttonClock = btn3.clock;
   
   btn4 = new visual.ButtonStim({
     win: psychoJS.window,
@@ -590,6 +593,7 @@ async function experimentInit() {
     italic: false,
   });
   btn4.clock = new util.Clock();
+  btn4.buttonClock = btn4.clock;
   
   btn5 = new visual.ButtonStim({
     win: psychoJS.window,
@@ -614,6 +618,7 @@ async function experimentInit() {
     italic: false,
   });
   btn5.clock = new util.Clock();
+  btn5.buttonClock = btn5.clock;
   
   // Run 'Begin Experiment' code from code_questionnaire
   psychoJS.window.mouseVisible = true;
