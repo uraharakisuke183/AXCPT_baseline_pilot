@@ -3532,9 +3532,10 @@ function data_saveRoutineBegin(snapshot) {
         // Disable downloading results to browser
         psychoJS._saveResults = 0;
         
-        // Generate filename for results
-        let filename = psychoJS._experiment._experimentName + '_' +
-            psychoJS._experiment._datetime + '.csv';
+                // Generate filename for results
+        let participantId = expInfo["participant"] || 'unknown';
+        let filename = participantId + '_' + psychoJS._experiment._experimentName + '_' +
+            expInfo['date'] + '.csv';
         
         // Extract data object from experiment
         let dataObj = psychoJS._experiment._trialsData;
