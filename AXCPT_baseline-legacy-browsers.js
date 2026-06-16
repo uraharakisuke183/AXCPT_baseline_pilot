@@ -1836,15 +1836,40 @@ function trialRoutineEnd(snapshot) {
         
         probe_key_resp.stop();
         // Run 'End Routine' code from code_probe_corr
-        correct_ans = probe_resp;
-        pressed = probe_key_resp.keys;
-        if (((correct_ans === "") || (correct_ans === null))) {
-            probe_corr = (((pressed === null) || (pressed === [])) ? 1 : 0);
-        } else {
-            probe_corr = ((pressed === correct_ans) ? 1 : 0);
+        function emptyValue(x) {
+          if (x === null || x === undefined) return true;
+          if (Array.isArray(x)) return x.length === 0;
+          let s = String(x).trim().toLowerCase();
+          return ["", "none", "nan"].includes(s);
         }
-                psychoJS.experiment.addData("probe_corr", probe_corr);
-        psychoJS.experiment.addData("is_nogo", ((probe_key_resp.keys === undefined || probe_key_resp.keys === "") ? 1 : 0));
+        
+        function normValue(x) {
+          if (emptyValue(x)) return null;
+          if (Array.isArray(x)) return String(x[0]);
+          return String(x);
+        }
+        
+        let cueExpected = normValue(cue_resp);
+        let cuePressed = normValue(cue_key_resp.keys);
+        let cue_corr = (cueExpected === null)
+          ? (cuePressed === null ? 1 : 0)
+          : (cuePressed === cueExpected ? 1 : 0);
+        
+        let probeExpected = normValue(probe_resp);
+        let probePressed = normValue(probe_key_resp.keys);
+        probe_corr = (probeExpected === null)
+          ? (probePressed === null ? 1 : 0)
+          : (probePressed === probeExpected ? 1 : 0);
+        
+        let is_nogo_design = (probeExpected === null) ? 1 : 0;
+        
+        cue_key_resp.corr = cue_corr;
+        probe_key_resp.corr = probe_corr;
+        
+        psychoJS.experiment.addData("cue_corr", cue_corr);
+        psychoJS.experiment.addData("probe_corr", probe_corr);
+        psychoJS.experiment.addData("is_nogo", is_nogo_design);
+        psychoJS.experiment.addData("is_nogo_design", is_nogo_design);
         if (typeof blocks_loop !== 'undefined' && blocks_loop !== null) {
             psychoJS.experiment.addData("block_number", blocks_loop.thisN + 1);
             psychoJS.experiment.addData("trial_number", trials_loop.thisN + 1);
@@ -3542,21 +3567,73 @@ function data_saveRoutineBegin(snapshot) {
         // Disable downloading results to browser
         psychoJS._saveResults = 0;
         
-                // Generate filename for results
-        let participantId = expInfo["participant"] || 'unknown';
-        let filename = participantId + '_' + psychoJS._experiment._experimentName + '_' +
-            expInfo['date'] + '.csv';
+        globalThis.dataSaveDone = false;
+        globalThis.dataSaveOk = false;
+        globalThis.dataSaveError = "";
         
-        // Extract data object from experiment
-        let dataObj = psychoJS._experiment._trialsData;
+        text_data_save.setText("Сохранение данных...\nПожалуйста, не закрывайте окно.");
         
-        // Convert data object to CSV
-        let data = [Object.keys(dataObj[0])].concat(dataObj).map(it => {
-            return Object.values(it).toString()
-        }).join('\n')
+        function csvCell(value) {
+            if (value === null || value === undefined) return "";
+            if (typeof value === "object") value = JSON.stringify(value);
+        
+            let s = String(value).replace(/\r?\n/g, " ");
+            if (s.includes('"') || s.includes(",")) {
+                s = '"' + s.replace(/"/g, '""') + '"';
+            }
+            return s;
+        }
+        
+        function trialsToCsv(rows) {
+            rows = Array.isArray(rows) ? rows : [];
+        
+            let headers = [];
+            let seen = new Set();
+        
+            for (const row of rows) {
+                if (row && typeof row === "object") {
+                    for (const key of Object.keys(row)) {
+                        if (!seen.has(key)) {
+                            seen.add(key);
+                            headers.push(key);
+                        }
+                    }
+                }
+            }
+        
+            if (headers.length === 0) {
+                return "warning\nNo trial data found";
+            }
+        
+            let lines = [headers.map(csvCell).join(",")];
+        
+            for (const row of rows) {
+                lines.push(headers.map(key => csvCell(row ? row[key] : "")).join(","));
+            }
+        
+            return lines.join("\n");
+        }
+        
+        let participantId = String(
+            expInfo["participant"] ||
+            psychoJS.experiment.extraInfo["participant"] ||
+            "unknown"
+        ).trim();
+        
+        participantId = participantId.replace(/[^A-Za-z0-9_-]/g, "_") || "unknown";
+        
+        let expNameSafe = String(psychoJS._experiment._experimentName || expName || "AXCPT_baseline")
+            .replace(/[^A-Za-z0-9_-]/g, "_");
+        
+        let datetimeSafe = String(expInfo["date"] || psychoJS._experiment._datetime || new Date().toISOString())
+            .replace(/[^A-Za-z0-9_-]/g, "_");
+        
+        let filename = participantId + "_" + expNameSafe + "_" + datetimeSafe + ".csv";
+        let dataObj = psychoJS._experiment._trialsData || [];
+        let csvData = trialsToCsv(dataObj);
         
         // Send data to OSF via DataPipe
-        console.log('Saving data...');
+        console.log("Saving data to DataPipe:", filename);
         fetch('https://pipe.jspsych.org/api/data', {
             method: 'POST',
             headers: {
@@ -3566,12 +3643,25 @@ function data_saveRoutineBegin(snapshot) {
             body: JSON.stringify({
                 experimentID: 'm2wVfSHDByjQ',
                 filename: filename,
-                data: data,
+                data: csvData,
             }),
-        }).then(response => response.json()).then(data => {
-            console.log(data);
-            quitPsychoJS();
         })
+        .then(async response => {
+            let responseText = await response.text();
+        
+            if (!response.ok) {
+                throw new Error("DataPipe error " + response.status + ": " + responseText);
+            }
+        
+            console.log("DataPipe response:", responseText);
+            globalThis.dataSaveOk = true;
+            globalThis.dataSaveDone = true;
+        })
+        .catch(error => {
+            console.error("DataPipe save failed:", error);
+            globalThis.dataSaveError = String(error);
+            globalThis.dataSaveDone = true;
+        });
         psychoJS.experiment.addData('data_save.started', globalClock.getTime());
         data_saveMaxDuration = null
         // keep track of which components have finished
@@ -3594,6 +3684,17 @@ function data_saveRoutineEachFrame() {
         t = data_saveClock.getTime();
         frameN = frameN + 1;// number of completed frames (so 0 is the first frame)
         // update/draw components on each frame
+        if (globalThis.dataSaveDone) {
+            if (globalThis.dataSaveOk) {
+                continueRoutine = false;
+            } else {
+                text_data_save.setText(
+                    "Ошибка сохранения данных.\n" +
+                    "Пожалуйста, не закрывайте окно и сообщите экспериментатору.\n\n" +
+                    globalThis.dataSaveError
+                );
+            }
+        }
         
         // *text_data_save* updates
         if (t >= 0.0 && text_data_save.status === PsychoJS.Status.NOT_STARTED) {
@@ -3609,7 +3710,7 @@ function data_saveRoutineEachFrame() {
         if (text_data_save.status === PsychoJS.Status.STARTED) {
         }
         
-        frameRemains = 0.0 + 3 - psychoJS.window.monitorFramePeriod * 0.75;// most of one frame period left
+        frameRemains = 0.0 + 3600 - psychoJS.window.monitorFramePeriod * 0.75;// keep message visible while DataPipe finishes
         if (text_data_save.status === PsychoJS.Status.STARTED && t >= frameRemains) {
           // keep track of stop time/frame for later
           text_data_save.tStop = t;  // not accounting for scr refresh
@@ -3638,7 +3739,7 @@ function data_saveRoutineEachFrame() {
         });
         
         // refresh the screen if continuing
-        if (continueRoutine && routineTimer.getTime() > 0) {
+        if (continueRoutine) {
           return Scheduler.Event.FLIP_REPEAT;
         } else {
           return Scheduler.Event.NEXT;
